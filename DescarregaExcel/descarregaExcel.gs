@@ -13,8 +13,8 @@
 
 function exportarTXTAlDriveMateixaCarpetaSobreescrivint() {
   // 🔹 CONFIGURACIÓ (ho ha d'editar l'usuari)
-  const spreadsheetId = "PUT_YOUR_SPREADSHEET_ID_HERE";
-  const nomFulla = "PUT_YOUR_SHEET_NAME_HERE";
+  const spreadsheetId = "PUT_YOUR_SPREADSHEET_ID_HERE"; //es el que es troba entre https://docs.google.com/spreadsheets/d/AquíID/edit?usp=sharing
+  const nomFulla = "PUT_YOUR_SHEET_NAME_HERE"; //nom fulla 
   const columnes = [1, 2]; // Exemple: columnes A i B
   const filaInicial = 1;
   const filaFinal = 10;
