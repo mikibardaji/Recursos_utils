@@ -11,5 +11,5 @@
 
    · [Script per descomprimir zips i subzips](https://github.com/mikibardaji/ScriptDescompressor)
 
-   · [Copiar i pegar interval de full excel encara que estiguin ocults](https://github.com/mikibardaji/Recursos_utils)
+   · [Copiar i pegar interval de full excel encara que estiguin ocults](https://github.com/mikibardaji/Recursos_utils/tree/main/DescarregaExcel)
    
