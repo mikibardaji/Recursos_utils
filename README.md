@@ -12,4 +12,6 @@
    · [Script per descomprimir zips i subzips](https://github.com/mikibardaji/ScriptDescompressor)
 
    · [Copiar i pegar interval de full excel encara que estiguin ocults](https://github.com/mikibardaji/Recursos_utils/tree/main/DescarregaExcel)
+
+   · [Pagina per repartir alumnes examen](https://github.com/mikibardaji/Recursos_utils/repartir.html)
    
