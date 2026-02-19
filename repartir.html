@@ -2,7 +2,7 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8" />
-<title>Repartidor vertical amb columnes = files</title>
+<title>Repartidor d'Alumnes amb Opció de No Mostrar Professor</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -17,7 +17,7 @@
     margin: 10px 0;
     cursor: pointer;
   }
-  input, textarea, select {
+  input, textarea, select, label {
     padding: 6px;
     margin: 5px 0;
     width: 100%;
@@ -56,7 +56,7 @@
 </head>
 <body>
 
-<h1>Repartidor d'Alumnes Vertical amb Columnes = Files</h1>
+<h1>Repartidor d'Alumnes</h1>
 
 <div id="configuracio">
   <label>Quantes files té l'aula?</label>
@@ -79,6 +79,11 @@
     <option value="centre">Centre</option>
     <option value="dreta">Dreta</option>
   </select>
+
+  <label>
+    <input type="checkbox" id="noMostrarProfessor">
+    No mostrar professor
+  </label>
 </div>
 
 <div id="alumnesConfig" style="display:none;">
@@ -118,6 +123,7 @@ function repartir() {
   const text = document.getElementById("llistaAlumnes").value;
   const orientacio = document.getElementById("orientacio").value;
   const posicio = document.getElementById("posicioProfessor").value;
+  const noMostrar = document.getElementById("noMostrarProfessor").checked;
 
   let alumnes = text
     .split(/[\n,]+/)
@@ -130,7 +136,6 @@ function repartir() {
   aula.innerHTML = "";
 
   if (orientacio === "horizontal") {
-    // Igual que abans: files a files, columnes ordinadors + professor a columna 1 fila X
     const maxOrdinadors = Math.max(...configuracioFiles);
     const colTotal = maxOrdinadors + 1;
 
@@ -143,16 +148,14 @@ function repartir() {
     let alumnesIndex = 0;
 
     let filaProfessor;
-    if (posicio === "esquerra") {
-      filaProfessor = configuracioFiles.length - 1;
-    } else if (posicio === "dreta") {
-      filaProfessor = 0;
-    } else {
-      filaProfessor = Math.floor(configuracioFiles.length / 2);
+    if (!noMostrar) {
+      if (posicio === "esquerra") filaProfessor = configuracioFiles.length - 1;
+      else if (posicio === "dreta") filaProfessor = 0;
+      else filaProfessor = Math.floor(configuracioFiles.length / 2);
     }
 
     for (let fila = 0; fila < configuracioFiles.length; fila++) {
-      if (fila === filaProfessor) {
+      if (!noMostrar && fila === filaProfessor) {
         const prof = document.createElement("div");
         prof.className = "professor";
         prof.textContent = "Professor";
@@ -165,6 +168,7 @@ function repartir() {
         buida.style.gridColumn = 1;
         grid.appendChild(buida);
       }
+
       const numOrdinadors = configuracioFiles[fila];
       for (let col = 0; col < numOrdinadors; col++) {
         const ord = crearOrdinador(alumnes, alumnesIndex++);
@@ -174,51 +178,45 @@ function repartir() {
       }
     }
     aula.appendChild(grid);
+
   } else {
-    // Vertical: columnes = files
+    // Vertical: columnes = files + opcions de professor a primera fila
     const maxOrdinadors = Math.max(...configuracioFiles);
     const numFiles = configuracioFiles.length;
 
     const grid = document.createElement("div");
     grid.className = "grid-aula";
-
-    // Files: la primera per professor + tantes files com màxim ordinadors + 1 per separació
-    // Cols: tantes com files de l'aula
+    // fila 1 per al professor o buida, després files d’ordinadors
     grid.style.gridTemplateRows = `auto repeat(${maxOrdinadors}, auto)`;
     grid.style.gridTemplateColumns = `repeat(${numFiles}, 130px)`;
     grid.style.alignItems = "start";
 
     let alumnesIndex = 0;
 
-    // Determinar columna del professor a la primera fila
-    let colProfessor;
-    if (posicio === "esquerra") {
-      colProfessor = 1;
-    } else if (posicio === "dreta") {
-      colProfessor = numFiles;
-    } else {
-      colProfessor = Math.ceil(numFiles / 2);
+    if (!noMostrar) {
+      let colProfessor;
+      if (posicio === "esquerra") colProfessor = 1;
+      else if (posicio === "dreta") colProfessor = numFiles;
+      else colProfessor = Math.ceil(numFiles / 2);
+
+      const prof = document.createElement("div");
+      prof.className = "professor";
+      prof.textContent = "Professor";
+      prof.style.gridRow = 1;
+      prof.style.gridColumn = colProfessor;
+      grid.appendChild(prof);
     }
 
-    // Posar professor
-    const prof = document.createElement("div");
-    prof.className = "professor";
-    prof.textContent = "Professor";
-    prof.style.gridRow = 1;
-    prof.style.gridColumn = colProfessor;
-    grid.appendChild(prof);
-
-    // Omplir ordinadors per columna (fila de l'aula) a partir de la segona fila
+    // omplir ordinadors a partir de fila 2
     for (let col = 0; col < numFiles; col++) {
       const numOrdinadorsFila = configuracioFiles[col];
-      for (let fila = 0; fila < numOrdinadorsFila; fila++) {
+      for (let filaOrd = 0; filaOrd < numOrdinadorsFila; filaOrd++) {
         const ord = crearOrdinador(alumnes, alumnesIndex++);
-        ord.style.gridRow = fila + 2; // fila 2 i següents per ordinadors
-        ord.style.gridColumn = col + 1; // columna = fila de l'aula
+        ord.style.gridRow = filaOrd + 2;
+        ord.style.gridColumn = col + 1;
         grid.appendChild(ord);
       }
     }
-
     aula.appendChild(grid);
   }
 }
